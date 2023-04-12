@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-mysql-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-mysql
+  template:
+    metadata:
+      labels:
+        app: auth-mysql
+    spec:
+      containers:
+        - name: auth-mysql
+          image: mysql # official dockerhub image
+          env: 
+            - name: MYSQL_ROOT_PASSWORD
+              value: root
+            - name: MYSQL_DATABASE
+              value: auth-db
+            - name: MYSQL_USER
+              value: user
+            - name: MYSQL_PASSWORD
+              value: pass
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-mysql-srv
+spec:
+  selector:
+    app: auth-mysql
+  ports:
+    - name: db
+      protocol: TCP
+      port: 3306 # default mongo port
+      targetPort: 3306
