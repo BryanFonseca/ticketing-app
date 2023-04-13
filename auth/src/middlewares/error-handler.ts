@@ -4,7 +4,7 @@ import { DatabaseConnectionError } from '../errors/database-connection-error';
 import { CustomError } from "../errors/custom-error";
 
 export function errorHandler(err: Error, req: Request, res: Response, next: NextFunction) {
-    console.log('Something went wrong', err); // log into some file might be useful
+    console.error('Something went wrong', err); // log into some file might be useful
 
     if (err instanceof CustomError) {
         return res.status(err.statusCode).send({ errors: err.serializeError() });
