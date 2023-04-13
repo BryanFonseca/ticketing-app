@@ -1,7 +1,7 @@
 import express from 'express';
 import 'express-async-errors';
 import { json } from 'body-parser';
-import { Sequelize } from 'sequelize-typescript';
+import sequelize from './sequelize';
 
 import { currentUserRouter } from './routes/current-user';
 import { signinRouter } from './routes/signin';
@@ -27,23 +27,10 @@ app.use(errorHandler);
 
 const init = async () => {
     try {
-        // connect using the K8s service
-        const sequelize = new Sequelize('auth-db', 'user', 'pass', {
-            host: 'auth-mysql-srv',
-            dialect: 'mysql',
-            models: [__dirname + '/models']
-        });
+        // Tests the connection 
+        (await sequelize).authenticate();
 
-        await sequelize.sync({ force: true }); // Crea las tablas necesarias
-
-        // This tests the connection 
-        await sequelize.authenticate();
         console.log('Successfully connected to MySQL Database');
-
-        await User.create({
-            email: 'isaac1805@hotmail.com',
-            password: 'test',
-        });
 
         app.listen(3000, () => {
             console.log('Listening on port 3000');
