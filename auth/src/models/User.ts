@@ -1,5 +1,7 @@
 import { Optional } from "sequelize";
-import { Model, Column, Table } from "sequelize-typescript";
+import { Model, Column, Table, BeforeSave } from "sequelize-typescript";
+
+import { Password } from "../services/password";
 
 interface UserAttributes {
     id: number;
@@ -16,4 +18,12 @@ export class User extends Model<UserAttributes, UserCreationAttributes> {
 
     @Column
     password!: string;
+
+    @BeforeSave
+    static async hashPassword(instance: User) {
+        if (instance.changed('password')) {
+            const hashed = await Password.toHash(instance.password);
+            instance.password = hashed;
+        }
+    }
 }
