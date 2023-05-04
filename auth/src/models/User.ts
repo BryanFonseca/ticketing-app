@@ -26,4 +26,11 @@ export class User extends Model<UserAttributes, UserCreationAttributes> {
             instance.password = hashed;
         }
     }
+
+    public toJSON(): object {
+        return {
+            id: this.id,
+            email: this.email,
+        };
+    }
 }

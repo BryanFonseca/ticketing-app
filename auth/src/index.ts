@@ -34,6 +34,8 @@ app.all('*', async () => {
 app.use(errorHandler);
 
 const init = async () => {
+    if (!process.env.JWT_KEY) throw new Error('JWT_KEY env variable must be defined');
+
     try {
         // Tests the connection 
         (await sequelize).authenticate();
